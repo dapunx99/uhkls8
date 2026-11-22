@@ -1,0 +1,2075 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Informatika Kelas 8 - SMP (TP 2026/2027)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        academic: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .excel-grid th, .excel-grid td {
+            border: 1px solid #cbd5e1;
+        }
+        .fade-in {
+            animation: fadeIn 0.25s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col selection:bg-academic-200 selection:text-academic-900">
+
+    <!-- ==================== HEADER UTAMA ==================== -->
+    <header class="bg-gradient-to-r from-academic-900 via-academic-800 to-blue-900 text-white shadow-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Logo & Judul -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center shadow-inner">
+                    <i class="fa-solid fa-laptop-code text-xl text-indigo-200"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm sm:text-base tracking-tight leading-tight">INFORMATIKA KELAS 8</h1>
+                    <p class="text-[11px] sm:text-xs text-indigo-200 font-medium">Sekolah Menengah Pertama • Tahun Ajaran 2026–2027</p>
+                </div>
+            </div>
+
+            <!-- Kanan Header: Timer (saat ujian) & Pengaturan Guru -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- Timer Badge -->
+                <div id="header-timer" class="hidden items-center space-x-2 bg-white/15 border border-white/20 px-3 py-1.5 rounded-xl font-mono text-sm sm:text-base font-semibold shadow-sm">
+                    <i class="fa-regular fa-clock text-amber-300 animate-pulse"></i>
+                    <span id="timer-display">60:00</span>
+                </div>
+
+                <!-- Status Koneksi Spreadsheet -->
+                <div id="webhook-status-badge" class="hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-white/10 border border-white/15">
+                    <span id="webhook-dot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+                    <span id="webhook-status-text">Mode Lokal</span>
+                </div>
+
+                <!-- Tombol Panel Guru / Pengaturan -->
+                <button onclick="openTeacherAuth()" title="Pengaturan & Rekap Nilai Guru" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 transition border border-white/15 text-white flex items-center space-x-1.5">
+                    <i class="fa-solid fa-gear text-sm sm:text-base"></i>
+                    <span class="hidden sm:inline text-xs font-semibold">Panel Guru</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== KONTEN UTAMA ==================== -->
+    <main class="flex-grow flex flex-col justify-center">
+
+        <!-- 1. HALAMAN LOGIN / IDENTITAS SISWA -->
+        <section id="view-login" class="max-w-2xl w-full mx-auto px-4 py-8 sm:py-12 fade-in">
+            <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/70 border border-slate-200/80 overflow-hidden">
+                <!-- Banner Atas Kartu -->
+                <div class="bg-gradient-to-r from-academic-600 to-blue-600 p-6 sm:p-8 text-white relative overflow-hidden">
+                    <div class="relative z-10">
+                        <span class="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-semibold tracking-wider uppercase mb-2">
+                            Evaluasi &amp; Latihan Soal Digital
+                        </span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight">Informatika Kelas 8</h2>
+                        <p class="text-indigo-100 text-sm mt-1">Tahun Ajaran 2026–2027 • 30 Soal • Nilai Maksimal 100</p>
+                    </div>
+                    <i class="fa-solid fa-graduation-cap absolute -right-4 -bottom-6 text-8xl text-white/10 rotate-12"></i>
+                </div>
+
+                <!-- Form Identitas -->
+                <form id="login-form" onsubmit="startExam(event)" class="p-6 sm:p-8 space-y-5">
+                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start space-x-3 text-amber-900 text-xs sm:text-sm">
+                        <i class="fa-solid fa-circle-info text-amber-500 text-base mt-0.5"></i>
+                        <div>
+                            <p class="font-semibold">Petunjuk Pengerjaan:</p>
+                            <ul class="list-disc list-inside mt-1 space-y-0.5 text-amber-800">
+                                <li>Isi nama lengkap, nomor peserta/absen, dan pilih kelas (<strong>VIII A – VIII D</strong>).</li>
+                                <li>Waktu pengerjaan adalah <strong>60 menit</strong> untuk <strong>30 soal</strong> (Nilai Maksimal: 100).</li>
+                                <li>Perhatikan soal nomor <strong>26</strong> bertipe <em>Pilihan Ganda Kompleks</em> (dapat memilih lebih dari satu jawaban benar).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label for="student-name" class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Lengkap Siswa <span class="text-rose-500">*</span></label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                                    <i class="fa-solid fa-user"></i>
+                                </span>
+                                <input type="text" id="student-name" required placeholder="Contoh: Raka Pratama Putra"
+                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:border-academic-600 focus:ring-4 focus:ring-academic-600/10 outline-none transition text-sm sm:text-base font-medium">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="student-id" class="block text-sm font-semibold text-slate-700 mb-1.5">Nomor Peserta / Absen <span class="text-rose-500">*</span></label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                                        <i class="fa-solid fa-id-card"></i>
+                                    </span>
+                                    <input type="text" id="student-id" required placeholder="Contoh: 08 atau 26-08-001"
+                                        class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:border-academic-600 focus:ring-4 focus:ring-academic-600/10 outline-none transition text-sm sm:text-base font-medium">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="student-class" class="block text-sm font-semibold text-slate-700 mb-1.5">Kelas <span class="text-rose-500">*</span></label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                                        <i class="fa-solid fa-users-rectangle"></i>
+                                    </span>
+                                    <select id="student-class" required
+                                        class="w-full pl-10 pr-8 py-3 rounded-xl border border-slate-300 focus:border-academic-600 focus:ring-4 focus:ring-academic-600/10 outline-none transition text-sm sm:text-base font-medium bg-white">
+                                        <option value="" disabled selected>-- Pilih Kelas --</option>
+                                        <option value="VIII A">VIII A</option>
+                                        <option value="VIII B">VIII B</option>
+                                        <option value="VIII C">VIII C</option>
+                                        <option value="VIII D">VIII D</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-academic-600 to-blue-600 hover:from-academic-700 hover:to-blue-700 text-white font-bold text-base shadow-lg shadow-academic-600/25 active:scale-[0.99] transition flex items-center justify-center space-x-2">
+                            <span>Mulai Mengerjakan Ujian</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- 2. ANTARMUKA UJIAN (CBT) -->
+        <section id="view-exam" class="hidden max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6 fade-in">
+            <!-- Info Bar Peserta -->
+            <div class="bg-white rounded-2xl border border-slate-200 px-4 py-3 mb-5 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-full bg-academic-100 text-academic-700 flex items-center justify-center font-bold text-sm" id="exam-avatar">
+                        S
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-800 text-sm sm:text-base leading-tight" id="exam-student-name">Nama Siswa</p>
+                        <p class="text-xs text-slate-500 font-medium">
+                            Kelas: <span id="exam-student-class" class="text-academic-700 font-semibold">VIII A</span> • 
+                            No. Peserta: <span id="exam-student-id" class="font-mono text-slate-700">001</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3 text-xs sm:text-sm">
+                    <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
+                        Dijawab: <span id="answered-count">0</span>/30
+                    </span>
+                </div>
+            </div>
+
+            <!-- Grid Utama: Kiri (Area Soal) & Kanan (Navigasi Nomor) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- Kolom Kiri: Konten Soal -->
+                <div class="lg:col-span-8 bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <!-- Header Nomor Soal -->
+                    <div class="bg-slate-50 border-b border-slate-200 px-5 sm:px-7 py-4 flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center space-x-2.5">
+                            <span class="px-3 py-1 rounded-xl bg-academic-600 text-white font-bold text-sm shadow-sm">
+                                Soal No. <span id="current-q-num">1</span>
+                            </span>
+                            <span id="doubt-badge" class="hidden px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 border border-amber-300 text-xs font-semibold">
+                                <i class="fa-solid fa-flag mr-1"></i>Ragu-ragu
+                            </span>
+                        </div>
+                        <span id="question-type-badge" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-200/70 text-slate-600">
+                            Pilihan Ganda
+                        </span>
+                    </div>
+
+                    <!-- Isi Pertanyaan & Tabel/Visual -->
+                    <div class="p-5 sm:p-7 flex-grow space-y-5">
+                        <div id="question-text" class="text-slate-800 text-base sm:text-lg font-medium leading-relaxed">
+                            <!-- Teks pertanyaan dirender di sini -->
+                        </div>
+
+                        <!-- Kontainer Visual / Tabel / Grid Excel -->
+                        <div id="question-media" class="hidden overflow-x-auto">
+                            <!-- Tabel HTML atau Grid Excel dirender di sini -->
+                        </div>
+
+                        <!-- Pilihan Jawaban A, B, C, D -->
+                        <div id="options-container" class="space-y-3 pt-2">
+                            <!-- Opsi dirender via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Footer Navigasi Soal -->
+                    <div class="bg-slate-50 border-t border-slate-200 px-5 sm:px-7 py-4 flex flex-wrap items-center justify-between gap-3">
+                        <button id="btn-prev" onclick="prevQuestion()" class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-sm transition flex items-center space-x-2 disabled:opacity-40 disabled:pointer-events-none">
+                            <i class="fa-solid fa-chevron-left"></i>
+                            <span>Sebelumnya</span>
+                        </button>
+
+                        <button id="btn-doubt" onclick="toggleDoubt()" class="px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-300 hover:bg-amber-100 text-amber-800 font-semibold text-sm transition flex items-center space-x-2">
+                            <i class="fa-regular fa-flag"></i>
+                            <span>Ragu-ragu</span>
+                        </button>
+
+                        <button id="btn-next" onclick="nextQuestion()" class="px-5 py-2.5 rounded-xl bg-academic-600 hover:bg-academic-700 text-white font-semibold text-sm shadow-sm transition flex items-center space-x-2">
+                            <span>Selanjutnya</span>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+
+                        <button id="btn-finish" onclick="confirmFinishExam()" class="hidden px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-600/20 transition flex items-center space-x-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Selesai &amp; Kirim Jawaban</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan: Navigasi Nomor Soal -->
+                <div class="lg:col-span-4 bg-white rounded-3xl border border-slate-200 shadow-sm p-5 sm:p-6 sticky top-20">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center space-x-2">
+                            <i class="fa-solid fa-grip text-academic-600"></i>
+                            <span>Navigasi Nomor Soal</span>
+                        </h3>
+                        <span class="text-xs text-slate-500 font-medium">30 Soal</span>
+                    </div>
+
+                    <!-- Grid 30 Nomor -->
+                    <div id="question-nav-grid" class="grid grid-cols-5 sm:grid-cols-6 lg:grid-cols-5 gap-2 mb-5">
+                        <!-- Tombol 1-30 dirender via JS -->
+                    </div>
+
+                    <!-- Legenda Warna -->
+                    <div class="border-t border-slate-100 pt-4 space-y-2 text-xs text-slate-600">
+                        <div class="flex items-center justify-between">
+                            <span class="flex items-center space-x-2">
+                                <span class="w-3.5 h-3.5 rounded bg-emerald-500 inline-block"></span>
+                                <span>Sudah Dijawab</span>
+                            </span>
+                            <span class="font-bold text-slate-800" id="legend-answered">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="flex items-center space-x-2">
+                                <span class="w-3.5 h-3.5 rounded bg-amber-400 inline-block"></span>
+                                <span>Ragu-ragu</span>
+                            </span>
+                            <span class="font-bold text-slate-800" id="legend-doubt">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="flex items-center space-x-2">
+                                <span class="w-3.5 h-3.5 rounded bg-slate-100 border border-slate-300 inline-block"></span>
+                                <span>Belum Dijawab</span>
+                            </span>
+                            <span class="font-bold text-slate-800" id="legend-unanswered">30</span>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Selesai Cepat di Panel Samping -->
+                    <button onclick="confirmFinishExam()" class="mt-5 w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm transition flex items-center justify-center space-x-2 shadow-sm">
+                        <i class="fa-solid fa-check-double text-emerald-400"></i>
+                        <span>Kumpulkan Ujian Sekarang</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. HALAMAN HASIL & PENGIRIMAN KE SPREADSHEET -->
+        <section id="view-result" class="hidden max-w-4xl w-full mx-auto px-4 py-8 sm:py-10 fade-in">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+                <!-- Header Hasil -->
+                <div class="bg-gradient-to-br from-academic-800 via-academic-700 to-blue-700 p-6 sm:p-8 text-white text-center relative">
+                    <div class="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center mx-auto mb-3 shadow-lg">
+                        <i class="fa-solid fa-award text-3xl text-amber-300"></i>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold">Ujian Telah Selesai!</h2>
+                    <p class="text-indigo-100 text-sm mt-1">PSAS Informatika Kelas 8 • Tahun Ajaran 2026–2027</p>
+                </div>
+
+                <div class="p-6 sm:p-8 space-y-6">
+                    <!-- Status Pengiriman Google Spreadsheet -->
+                    <div id="sync-status-box" class="rounded-2xl p-4 border flex items-center justify-between gap-3 bg-blue-50 border-blue-200 text-blue-900">
+                        <div class="flex items-center space-x-3">
+                            <i id="sync-icon" class="fa-solid fa-spinner fa-spin text-xl text-blue-600"></i>
+                            <div>
+                                <p id="sync-title" class="font-bold text-sm">Mengirim hasil ke Google Spreadsheet...</p>
+                                <p id="sync-desc" class="text-xs opacity-85 mt-0.5">Mohon tunggu sebentar, jangan tutup halaman ini.</p>
+                            </div>
+                        </div>
+                        <button id="btn-retry-sync" onclick="retrySendToSpreadsheet()" class="hidden px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shrink-0 shadow-xs">
+                            Kirim Ulang ke Spreadsheet
+                        </button>
+                    </div>
+
+                    <!-- Kartu Nilai Utama -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Jawaban Benar</p>
+                            <p class="text-3xl font-extrabold text-emerald-600 mt-1" id="res-correct">0</p>
+                            <p class="text-xs text-slate-400 mt-0.5">dari 30 soal</p>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Jawaban Salah</p>
+                            <p class="text-3xl font-extrabold text-rose-500 mt-1" id="res-wrong">0</p>
+                            <p class="text-xs text-slate-400 mt-0.5">soal tidak tepat</p>
+                        </div>
+                        <div class="bg-academic-50 border-2 border-academic-500 rounded-2xl p-4 shadow-sm">
+                            <p class="text-xs font-bold text-academic-700 uppercase tracking-wider">Nilai Akhir</p>
+                            <p class="text-4xl font-black text-academic-700 mt-0.5" id="res-score">0</p>
+                            <p class="text-xs text-academic-600 font-medium mt-0.5">Skala Maksimal 100</p>
+                        </div>
+                    </div>
+
+                    <!-- Detail Identitas Siswa -->
+                    <div class="bg-slate-50 rounded-2xl border border-slate-200 p-4 sm:p-5 space-y-2.5 text-sm">
+                        <div class="flex justify-between py-1 border-b border-slate-200/70">
+                            <span class="text-slate-500">Nama Lengkap</span>
+                            <span class="font-bold text-slate-800" id="res-name">-</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-200/70">
+                            <span class="text-slate-500">Nomor Peserta / Absen</span>
+                            <span class="font-mono font-semibold text-slate-800" id="res-id">-</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-200/70">
+                            <span class="text-slate-500">Kelas</span>
+                            <span class="font-bold text-academic-700" id="res-class">-</span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="text-slate-500">Waktu Selesai</span>
+                            <span class="font-medium text-slate-700" id="res-timestamp">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Rincian Status Jawaban Siswa (1 - 30) -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden">
+                        <button type="button" onclick="toggleReviewSection()" class="w-full bg-slate-100 hover:bg-slate-200/70 px-5 py-3.5 flex items-center justify-between text-left transition">
+                            <span class="font-bold text-slate-800 text-sm flex items-center space-x-2">
+                                <i class="fa-solid fa-list-check text-academic-600"></i>
+                                <span>Lihat Ringkasan &amp; Status Jawaban Kamu (Soal 1–30)</span>
+                            </span>
+                            <i id="review-chevron" class="fa-solid fa-chevron-down text-slate-500 text-xs transition-transform"></i>
+                        </button>
+                        <div id="review-answers-container" class="hidden p-4 sm:p-5 bg-white max-h-96 overflow-y-auto divide-y divide-slate-100 text-xs sm:text-sm">
+                            <!-- Diisi otomatis via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi Cadangan CSV & Kembali -->
+                    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                        <button onclick="downloadSingleResultCSV()" class="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-file-csv text-base"></i>
+                            <span>Unduh Bukti/Hasil CSV</span>
+                        </button>
+                        <button onclick="resetToLogin()" class="py-3 px-5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>Selesai &amp; Keluar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+            <p>&copy; 2026 Informatika SMP • Sistem Evaluasi Digital Berbasis Web (CBT)</p>
+        </div>
+    </footer>
+
+    <!-- ==================== MODAL KONFIRMASI SELESAI UJIAN ==================== -->
+    <div id="modal-confirm" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 fade-in">
+            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl mb-4">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-lg font-extrabold text-slate-800">Konfirmasi Pengumpulan Ujian</h3>
+            <p id="confirm-message" class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Apakah kamu yakin ingin menyelesaikan ujian dan mengirim jawaban sekarang?
+            </p>
+            <div class="mt-6 flex items-center justify-end space-x-3">
+                <button onclick="closeConfirmModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm transition">
+                    Periksa Lagi
+                </button>
+                <button onclick="finishExam()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition">
+                    Ya, Kirim Sekarang
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL PIN GURU ==================== -->
+    <div id="modal-teacher-pin" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 fade-in">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-10 h-10 rounded-xl bg-academic-100 text-academic-700 flex items-center justify-center">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">Akses Panel Guru</h3>
+                        <p class="text-xs text-slate-500">Masukkan PIN (Default: 1234)</p>
+                    </div>
+                </div>
+                <button onclick="closeTeacherPinModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form onsubmit="verifyTeacherPin(event)" class="space-y-4">
+                <input type="password" id="teacher-pin-input" maxlength="8" placeholder="••••" required
+                    class="w-full text-center tracking-[0.5em] font-mono text-xl py-3 rounded-xl border border-slate-300 focus:border-academic-600 focus:ring-4 focus:ring-academic-600/10 outline-none">
+                <p id="pin-error-msg" class="hidden text-xs text-rose-600 font-semibold text-center">PIN salah! Gunakan PIN default: 1234</p>
+                <button type="submit" class="w-full py-3 rounded-xl bg-academic-600 hover:bg-academic-700 text-white font-bold text-sm transition">
+                    Masuk ke Dashboard Guru
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL DASHBOARD & PENGATURAN GURU ==================== -->
+    <div id="modal-teacher-panel" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden fade-in">
+            <!-- Header Panel Guru -->
+            <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between shrink-0">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-chalkboard-user text-indigo-400 text-xl"></i>
+                    <div>
+                        <h3 class="font-bold text-base sm:text-lg">Dashboard Guru &amp; Integrasi Google Spreadsheet</h3>
+                        <p class="text-xs text-slate-400">Kelola Webhook Google Sheets, Panduan Apps Script, &amp; Rekap Nilai Kelas VIII</p>
+                    </div>
+                </div>
+                <button onclick="closeTeacherPanel()" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Tabs Navigasi -->
+            <div class="bg-slate-100 px-6 pt-3 border-b border-slate-200 flex space-x-2 shrink-0 overflow-x-auto">
+                <button onclick="switchTeacherTab('tab-webhook')" id="btn-tab-webhook" class="px-4 py-2.5 rounded-t-xl font-bold text-xs sm:text-sm bg-white text-academic-700 border-t border-x border-slate-200">
+                    <i class="fa-solid fa-link mr-1.5"></i>Pengaturan Spreadsheet
+                </button>
+                <button onclick="switchTeacherTab('tab-rekap')" id="btn-tab-rekap" class="px-4 py-2.5 rounded-t-xl font-semibold text-xs sm:text-sm text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-table mr-1.5"></i>Rekap Nilai Lokal (<span id="local-records-count">0</span>)
+                </button>
+                <button onclick="switchTeacherTab('tab-script')" id="btn-tab-script" class="px-4 py-2.5 rounded-t-xl font-semibold text-xs sm:text-sm text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-code mr-1.5"></i>Panduan &amp; Kode Apps Script
+                </button>
+            </div>
+
+            <!-- Isi Konten Modal Guru -->
+            <div class="p-6 overflow-y-auto flex-grow space-y-6">
+
+                <!-- TAB 1: PENGATURAN WEBHOOK GOOGLE SPREADSHEET -->
+                <div id="tab-webhook" class="space-y-5">
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-4 text-sm text-indigo-900">
+                        <p class="font-bold flex items-center space-x-2">
+                            <i class="fa-solid fa-cloud-arrow-up text-indigo-600"></i>
+                            <span>Koneksi Otomatis ke Google Sheets</span>
+                        </p>
+                        <p class="text-xs text-indigo-800 mt-1 leading-relaxed">
+                            Tempelkan <strong>URL Web App Google Apps Script</strong> di bawah ini agar setiap siswa kelas VIII yang menekan tombol <em>"Selesai &amp; Kirim Jawaban"</em> datanya langsung masuk ke baris baru Google Spreadsheet Anda secara otomatis.
+                        </p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="block text-sm font-bold text-slate-700">URL Google Apps Script Web App</label>
+                        <input type="url" id="input-webhook-url" placeholder="https://script.google.com/macros/s/AKfycbx.../exec"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-academic-600 focus:ring-4 focus:ring-academic-600/10 outline-none font-mono text-xs sm:text-sm">
+                        <div class="flex flex-wrap gap-3 pt-1">
+                            <button onclick="saveWebhookUrl()" class="px-5 py-2.5 rounded-xl bg-academic-600 hover:bg-academic-700 text-white font-bold text-sm shadow-sm transition flex items-center space-x-2">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span>Simpan Pengaturan URL</span>
+                            </button>
+                            <button onclick="testWebhookConnection()" class="px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 font-semibold text-sm transition flex items-center space-x-2">
+                                <i class="fa-solid fa-vial"></i>
+                                <span>Tes Koneksi</span>
+                            </button>
+                            <button onclick="clearWebhookUrl()" class="px-4 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-semibold text-sm transition">
+                                Hapus URL
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="webhook-feedback" class="hidden rounded-xl p-3 text-xs font-semibold"></div>
+                </div>
+
+                <!-- TAB 2: REKAP NILAI LOKAL -->
+                <div id="tab-rekap" class="hidden space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-base">Daftar Hasil Ujian Tersimpan di Perangkat Ini</h4>
+                            <p class="text-xs text-slate-500">Data otomatis dicadangkan di browser sebagai antisipasi jika koneksi internet terputus.</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="exportAllResultsCSV()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-sm transition flex items-center space-x-2">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>Unduh Rekap CSV</span>
+                            </button>
+                            <button onclick="clearLocalResults()" class="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-semibold text-xs transition">
+                                Bersihkan Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-2xl overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                                    <th class="py-3 px-4 font-bold">Waktu</th>
+                                    <th class="py-3 px-4 font-bold">No. Peserta</th>
+                                    <th class="py-3 px-4 font-bold">Nama Siswa</th>
+                                    <th class="py-3 px-4 font-bold">Kelas</th>
+                                    <th class="py-3 px-4 font-bold text-center">Benar</th>
+                                    <th class="py-3 px-4 font-bold text-center">Nilai</th>
+                                    <th class="py-3 px-4 font-bold text-center">Status Sync</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rekap-table-body" class="divide-y divide-slate-200">
+                                <!-- Data baris dirender via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 3: PANDUAN & KODE GOOGLE APPS SCRIPT -->
+                <div id="tab-script" class="hidden space-y-4">
+                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-xs sm:text-sm text-amber-900 space-y-1.5">
+                        <p class="font-bold">Cara Menghubungkan ke Google Spreadsheet (Hanya 2 Menit):</p>
+                        <ol class="list-decimal list-inside space-y-1 text-amber-800">
+                            <li>Buka <strong>Google Sheets</strong> baru di Google Drive Anda.</li>
+                            <li>Klik menu <strong>Ekstensi (Extensions) &rarr; Apps Script</strong>.</li>
+                            <li>Hapus semua kode bawaan, lalu <strong>Salin &amp; Tempel (Paste)</strong> kode di bawah ini.</li>
+                            <li>Klik ikon <strong>Simpan (Save)</strong>, lalu klik tombol biru <strong>Terapkan (Deploy) &rarr; Deployment baru</strong>.</li>
+                            <li>Pilih jenis: <strong>Aplikasi Web (Web App)</strong>, ubah <em>Yang memiliki akses</em> menjadi <strong>Siapa saja (Anyone)</strong>, lalu klik <strong>Terapkan</strong>.</li>
+                            <li>Salin <strong>URL Aplikasi Web</strong> yang muncul, lalu tempelkan pada tab <em>Pengaturan Spreadsheet</em> di aplikasi ini.</li>
+                        </ol>
+                    </div>
+
+                    <div class="relative">
+                        <div class="flex items-center justify-between bg-slate-800 text-slate-200 px-4 py-2.5 rounded-t-2xl text-xs font-mono">
+                            <span>Code.gs (Google Apps Script)</span>
+                            <button onclick="copyAppsScriptCode()" id="btn-copy-script" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-sans font-semibold transition flex items-center space-x-1.5">
+                                <i class="fa-regular fa-copy"></i>
+                                <span>Salin Kode</span>
+                            </button>
+                        </div>
+                        <textarea id="apps-script-code" readonly rows="15" class="w-full bg-slate-900 text-emerald-300 font-mono text-xs p-4 rounded-b-2xl outline-none resize-none leading-relaxed">function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({
+    "status": "online",
+    "message": "Webhook PSAS Informatika Kelas 8 aktif dan siap menerima data."
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  // Buat header otomatis jika baris pertama masih kosong
+  if (sheet.getLastRow() === 0) {
+    var headers = ["Waktu Kirim", "Nama", "No Peserta", "Kelas", "Benar", "Salah", "Nilai Akhir"];
+    for (var i = 1; i <= 30; i++) {
+      headers.push("No " + i);
+    }
+    sheet.appendRow(headers);
+    sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#e0e7ff");
+  }
+  
+  var data = JSON.parse(e.postData.contents);
+  var row = [
+    data.timestamp,
+    data.namaSiswa,
+    data.noPeserta,
+    data.kelas,
+    data.benar,
+    data.salah,
+    data.nilai
+  ];
+  
+  // Masukkan detail jawaban No 1 sampai No 30
+  if (data.detailJawaban && Array.isArray(data.detailJawaban)) {
+    for (var j = 0; j < data.detailJawaban.length; j++) {
+      row.push(data.detailJawaban[j]);
+    }
+  }
+  
+  sheet.appendRow(row);
+  return ContentService.createTextOutput(JSON.stringify({ "status": "success" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</textarea>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== NOTIFIKASI TOAST ==================== -->
+    <div id="toast-box" class="hidden fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700 text-xs sm:text-sm font-medium flex items-center space-x-2.5 fade-in">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toast-text">Pesan notifikasi</span>
+    </div>
+
+    <!-- ==================== LOGIKA JAVASCRIPT & BANK SOAL KELAS 8 ==================== -->
+    <script>
+        // Komponen HTML Reusable untuk Formula Bar VLOOKUP (Soal 9 & 11)
+        const VLOOKUP_FORMULA_MEDIA = `
+            <div class="my-3 bg-white border border-slate-300 rounded-xl p-3 sm:p-4 shadow-xs max-w-xl">
+                <div class="flex items-center space-x-2 text-xs sm:text-sm font-mono bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 overflow-x-auto">
+                    <span class="font-bold text-slate-700 pr-2 border-r border-slate-300">D6</span>
+                    <span class="text-slate-400 italic font-serif px-1">fx</span>
+                    <div class="inline-flex items-end whitespace-nowrap pt-4 pb-0.5">
+                        <span class="text-slate-800 font-semibold">=VLOOKUP(</span>
+                        <span class="relative inline-flex flex-col items-center">
+                            <span class="absolute -top-4 text-[11px] font-sans font-extrabold text-orange-600 bg-orange-100 px-1.5 rounded">1</span>
+                            <span class="text-amber-600 font-bold underline decoration-amber-400">A6</span>
+                        </span>
+                        <span class="text-slate-800">;</span>
+                        <span class="relative inline-flex flex-col items-center">
+                            <span class="absolute -top-4 text-[11px] font-sans font-extrabold text-orange-600 bg-orange-100 px-1.5 rounded">2</span>
+                            <span class="text-purple-700 font-bold underline decoration-purple-400">$G$6:$J$18</span>
+                        </span>
+                        <span class="text-slate-800">;</span>
+                        <span class="relative inline-flex flex-col items-center">
+                            <span class="absolute -top-4 text-[11px] font-sans font-extrabold text-orange-600 bg-orange-100 px-1.5 rounded">3</span>
+                            <span class="text-blue-600 font-bold underline decoration-blue-400">4</span>
+                        </span>
+                        <span class="text-slate-800">;</span>
+                        <span class="relative inline-flex flex-col items-center">
+                            <span class="absolute -top-4 text-[11px] font-sans font-extrabold text-orange-600 bg-orange-100 px-1.5 rounded">4</span>
+                            <span class="text-blue-600 font-bold underline decoration-blue-400">0</span>
+                        </span>
+                        <span class="text-slate-800 font-semibold">)</span>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Komponen HTML Reusable untuk Tabel Koperasi Desa (Soal 8 & 9)
+        const KOPERASI_TABLES_MEDIA = `
+            <div class="my-3 grid grid-cols-1 xl:grid-cols-2 gap-4 text-xs">
+                <!-- Tabel 1: DATA BASE -->
+                <div class="border border-slate-300 rounded-xl overflow-hidden bg-white shadow-xs">
+                    <div class="bg-slate-200 px-3 py-1 font-mono text-[11px] text-slate-600 flex justify-between border-b border-slate-300">
+                        <span>Kolom G – J</span>
+                        <span class="font-bold text-slate-800">DATA BASE</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="excel-grid w-full font-sans">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-500 font-mono text-[10px]">
+                                    <th class="px-2 py-1">G</th>
+                                    <th class="px-2 py-1">H</th>
+                                    <th class="px-2 py-1">I</th>
+                                    <th class="px-2 py-1">J</th>
+                                </tr>
+                                <tr class="bg-slate-900 text-white font-bold text-[11px]">
+                                    <th class="px-2 py-1.5 text-left">KODE BARANG</th>
+                                    <th class="px-2 py-1.5 text-left">NAMA BARANG</th>
+                                    <th class="px-2 py-1.5 text-left">JENIS BARANG</th>
+                                    <th class="px-2 py-1.5 text-right">HARGA</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-[11px]">
+                                <tr class="bg-slate-100"><td class="px-2 py-1 font-mono">BRS_10KG</td><td class="px-2 py-1">Beras 10 kg</td><td class="px-2 py-1"><span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900">Kebutuhan ...</span></td><td class="px-2 py-1 text-right">120000</td></tr>
+                                <tr class="bg-slate-200/70"><td class="px-2 py-1 font-mono">MYK_SNC2L</td><td class="px-2 py-1">Minyak Sunco 2 Liter</td><td class="px-2 py-1"><span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900">Kebutuhan ...</span></td><td class="px-2 py-1 text-right">42000</td></tr>
+                                <tr class="bg-slate-100"><td class="px-2 py-1 font-mono">MYK_BML2L</td><td class="px-2 py-1">Minyak Bimoli 2 Liter</td><td class="px-2 py-1 text-slate-400">▼</td><td class="px-2 py-1 text-right">44000</td></tr>
+                                <tr class="bg-slate-200/70"><td class="px-2 py-1 font-mono">GLPG3KG</td><td class="px-2 py-1">Gas LPG 3 kg</td><td class="px-2 py-1 text-slate-400">▼</td><td class="px-2 py-1 text-right">20000</td></tr>
+                                <tr class="bg-slate-100"><td class="px-2 py-1 font-mono">TPG_TRG500GR</td><td class="px-2 py-1">Tepung Terigu 500 gr</td><td class="px-2 py-1"><span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900">Kebutuhan ...</span></td><td class="px-2 py-1 text-right">11000</td></tr>
+                                <tr class="bg-slate-200/70"><td class="px-2 py-1 font-mono">GDCP175ML</td><td class="px-2 py-1">Good Day Cappucino</td><td class="px-2 py-1"><span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900">Minuman</span></td><td class="px-2 py-1 text-right">6000</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tabel 2: APLIKASI KOPERASI DESA -->
+                <div class="border border-slate-300 rounded-xl overflow-hidden bg-white shadow-xs">
+                    <div class="bg-slate-50 px-3 py-1.5 border-b border-slate-300">
+                        <p class="font-extrabold text-xs tracking-tight">
+                            APLIKASI KOPERASI DESA <span class="text-rose-600">MERAH</span> <span class="text-amber-500">KUNING</span> <span class="text-emerald-600">HIJAU</span>
+                        </p>
+                        <p class="text-[10px] text-slate-500">Penerapan Fungsi Validasi Data dan VLOOKUP pada Spreadsheet</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="excel-grid w-full font-sans">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-500 font-mono text-[10px]">
+                                    <th class="px-1.5 py-0.5"></th>
+                                    <th class="px-2 py-0.5">A</th>
+                                    <th class="px-2 py-0.5">B</th>
+                                    <th class="px-2 py-0.5">C</th>
+                                    <th class="px-2 py-0.5">D</th>
+                                    <th class="px-2 py-0.5">E</th>
+                                </tr>
+                                <tr class="bg-slate-900 text-white font-bold text-[11px]">
+                                    <th class="bg-slate-200 text-slate-600 font-mono text-[10px]">5</th>
+                                    <th class="px-2 py-1.5 text-left">KODE</th>
+                                    <th class="px-2 py-1.5 text-left">NAMA</th>
+                                    <th class="px-2 py-1.5 text-center">JUMLAH</th>
+                                    <th class="px-2 py-1.5 text-right">HARGA</th>
+                                    <th class="px-2 py-1.5 text-right">SUB TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-[11px]">
+                                <tr><td class="bg-slate-200 text-slate-600 font-mono text-center text-[10px]">6</td><td class="px-2 py-1 bg-yellow-300 font-mono font-semibold">TG_CKLT450GR</td><td class="px-2 py-1">Tanggo Coklat 450 gr</td><td class="px-2 py-1 bg-yellow-300 text-center font-bold">2</td><td class="px-2 py-1 text-right">Rp7.000,00</td><td class="px-2 py-1 text-right">Rp14.000,00</td></tr>
+                                <tr><td class="bg-slate-200 text-slate-600 font-mono text-center text-[10px]">7</td><td class="px-2 py-1 bg-yellow-300 font-mono font-semibold">TG_CKLT450GR</td><td class="px-2 py-1">Tanggo Coklat 450 gr</td><td class="px-2 py-1 bg-yellow-300 text-center font-bold">4</td><td class="px-2 py-1 text-right">Rp7.000,00</td><td class="px-2 py-1 text-right">Rp28.000,00</td></tr>
+                                <tr><td class="bg-slate-200 text-slate-600 font-mono text-center text-[10px]">8</td><td class="px-2 py-1 bg-yellow-300 font-mono font-semibold">MYK_SNC2L</td><td class="px-2 py-1">Minyak Sunco 2 Liter</td><td class="px-2 py-1 bg-yellow-300 text-center font-bold">2</td><td class="px-2 py-1 text-right">Rp42.000,00</td><td class="px-2 py-1 text-right">Rp84.000,00</td></tr>
+                                <tr><td class="bg-slate-200 text-slate-600 font-mono text-center text-[10px]">9</td><td class="px-2 py-1 bg-yellow-300 font-mono font-semibold">GLPG3KG</td><td class="px-2 py-1">Gas LPG 3 kg</td><td class="px-2 py-1 bg-yellow-300 text-center font-bold">10</td><td class="px-2 py-1 text-right">Rp20.000,00</td><td class="px-2 py-1 text-right">Rp200.000,00</td></tr>
+                                <tr><td class="bg-slate-200 text-slate-600 font-mono text-center text-[10px]">10</td><td class="px-2 py-1 bg-yellow-300 font-mono font-semibold">RYC70GR</td><td class="px-2 py-1">Royco 70 gr</td><td class="px-2 py-1 bg-yellow-300 text-center font-bold">6</td><td class="px-2 py-1 text-right">Rp1.500,00</td><td class="px-2 py-1 text-right">Rp9.000,00</td></tr>
+                                <tr class="bg-blue-100 font-bold"><td class="bg-slate-200 text-slate-600 font-mono text-center text-[10px]">12</td><td colspan="4" class="px-2 py-1.5 text-left">TOTAL BAYAR</td><td class="px-2 py-1.5 text-right bg-white">Rp335.000,00</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // BANK SOAL LENGKAP 30 SOAL INFORMATIKA KELAS 8
+        const QUESTIONS = [
+            {
+                no: 1,
+                text: "Aplikasi yang digunakan untuk mengolah data dalam bentuk baris dan kolom disebut ....",
+                options: {
+                    A: "Presentation",
+                    B: "Spreadsheet",
+                    C: "Browser",
+                    D: "Multimedia"
+                },
+                answer: "B"
+            },
+            {
+                no: 2,
+                text: "Salah satu kegunaan utama spreadsheet adalah ....",
+                options: {
+                    A: "Mengedit video",
+                    B: "Mengolah dan menganalisis data",
+                    C: "Membuat animasi 3D",
+                    D: "Mengedit suara"
+                },
+                answer: "B"
+            },
+            {
+                no: 3,
+                text: "Fungsi <code class='px-1.5 py-0.5 bg-slate-100 rounded font-mono text-academic-700 font-semibold'>COUNT</code> pada spreadsheet digunakan untuk ....",
+                options: {
+                    A: "Menghitung jumlah sel yang berisi angka",
+                    B: "Menghitung jumlah seluruh karakter",
+                    C: "Mencari nilai terbesar",
+                    D: "Mengurutkan data"
+                },
+                answer: "A"
+            },
+            {
+                no: 4,
+                text: "Perhatikan data berikut:<br>Jika digunakan rumus <code class='px-1.5 py-0.5 bg-slate-100 rounded font-mono text-academic-700 font-semibold'>=COUNT(A1:A5)</code>, hasilnya adalah ....",
+                media: `
+                    <div class="my-3 inline-block border border-slate-300 rounded-xl overflow-hidden bg-white shadow-xs">
+                        <div class="bg-slate-100 px-3 py-1.5 border-b border-slate-300 flex items-center space-x-2 text-xs font-mono">
+                            <span class="font-bold text-slate-700 pr-2 border-r border-slate-300">A7</span>
+                            <span class="text-slate-400 italic font-serif">fx</span>
+                        </div>
+                        <table class="excel-grid text-sm font-mono">
+                            <thead>
+                                <tr class="bg-slate-200 text-slate-600 text-xs">
+                                    <th class="w-10 py-1 text-center bg-slate-300"></th>
+                                    <th class="w-36 py-1 text-center font-bold bg-blue-100 text-blue-900">A</th>
+                                    <th class="w-24 py-1 text-center font-bold">B</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="bg-slate-200 text-slate-600 text-xs text-center py-1 font-bold">1</td><td class="px-3 py-1 text-right">1</td><td class="px-3 py-1"></td></tr>
+                                <tr><td class="bg-slate-200 text-slate-600 text-xs text-center py-1 font-bold">2</td><td class="px-3 py-1 text-right">10</td><td class="px-3 py-1"></td></tr>
+                                <tr><td class="bg-slate-200 text-slate-600 text-xs text-center py-1 font-bold">3</td><td class="px-3 py-1 text-right">15</td><td class="px-3 py-1"></td></tr>
+                                <tr><td class="bg-slate-200 text-slate-600 text-xs text-center py-1 font-bold">4</td><td class="px-3 py-1 text-left font-sans">Andi</td><td class="px-3 py-1"></td></tr>
+                                <tr><td class="bg-slate-200 text-slate-600 text-xs text-center py-1 font-bold">5</td><td class="px-3 py-1 text-center font-bold">20</td><td class="px-3 py-1"></td></tr>
+                                <tr><td class="bg-slate-200 text-slate-600 text-xs text-center py-1 font-bold">6</td><td class="px-3 py-1 text-left font-sans">Budi</td><td class="px-3 py-1"></td></tr>
+                                <tr><td class="bg-blue-100 text-blue-900 text-xs text-center py-1 font-bold">7</td><td class="px-3 py-1 h-7 border-2 border-blue-600 bg-blue-50/30"></td><td class="px-3 py-1"></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `,
+                options: {
+                    A: "2",
+                    B: "3",
+                    C: "4",
+                    D: "5"
+                },
+                answer: "C"
+            },
+            {
+                no: 5,
+                text: "Fungsi <code class='px-1.5 py-0.5 bg-slate-100 rounded font-mono text-academic-700 font-semibold'>HLOOKUP</code> digunakan untuk mencari data berdasarkan ....",
+                options: {
+                    A: "Data secara vertikal",
+                    B: "Data secara horizontal",
+                    C: "Data secara diagonal",
+                    D: "Ukuran tabel"
+                },
+                answer: "B"
+            },
+            {
+                no: 6,
+                text: "Perhatikan tabel berikut:<br>Fungsi yang tepat untuk mencari data secara mendatar berdasarkan kode adalah ....",
+                media: `
+                    <div class="my-3 inline-block border border-slate-300 rounded-xl overflow-hidden bg-white shadow-xs">
+                        <div class="bg-slate-100 px-3 py-1.5 border-b border-slate-300 flex items-center space-x-2 text-xs font-mono">
+                            <span class="font-bold text-slate-700 pr-2 border-r border-slate-300">A1</span>
+                            <span class="text-slate-400 italic font-serif">fx</span>
+                            <span class="text-slate-700">Kode</span>
+                        </div>
+                        <table class="excel-grid text-sm">
+                            <thead>
+                                <tr class="bg-slate-200 text-slate-600 text-xs font-mono">
+                                    <th class="w-9 py-1 text-center bg-slate-300"></th>
+                                    <th class="w-24 py-1 text-center font-bold bg-blue-100 text-blue-900">A</th>
+                                    <th class="w-28 py-1 text-center font-bold">B</th>
+                                    <th class="w-28 py-1 text-center font-bold">C</th>
+                                    <th class="w-32 py-1 text-center font-bold">D</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="bg-blue-100 text-blue-900 text-xs font-mono text-center py-1 font-bold">1</td>
+                                    <td class="px-3 py-1 font-bold border-2 border-blue-600 bg-slate-100">Kode</td>
+                                    <td class="px-3 py-1 text-right font-bold">A01</td>
+                                    <td class="px-3 py-1 text-right font-bold">A02</td>
+                                    <td class="px-3 py-1 text-right font-bold">A03</td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-slate-200 text-slate-600 text-xs font-mono text-center py-1 font-bold">2</td>
+                                    <td class="px-3 py-1 bg-slate-100 font-medium">Barang</td>
+                                    <td class="px-3 py-1">Buku</td>
+                                    <td class="px-3 py-1">Pensil</td>
+                                    <td class="px-3 py-1">Penghapus</td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-slate-200 text-slate-600 text-xs font-mono text-center py-1 font-bold">3</td>
+                                    <td class="px-3 py-1 bg-slate-100 font-medium">Harga</td>
+                                    <td class="px-3 py-1 text-right font-mono">5000</td>
+                                    <td class="px-3 py-1 text-right font-mono">3000</td>
+                                    <td class="px-3 py-1 text-right font-mono">2000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `,
+                options: {
+                    A: "COUNT",
+                    B: "VLOOKUP",
+                    C: "HLOOKUP",
+                    D: "SORT"
+                },
+                answer: "C"
+            },
+            {
+                no: 7,
+                text: "Fungsi <code class='px-1.5 py-0.5 bg-slate-100 rounded font-mono text-academic-700 font-semibold'>VLOOKUP</code> digunakan untuk mencari data berdasarkan ....",
+                options: {
+                    A: "Kolom secara vertikal",
+                    B: "Baris secara horizontal",
+                    C: "Baris secara diagonal",
+                    D: "Data secara horizontal"
+                },
+                answer: "A"
+            },
+            {
+                no: 8,
+                text: "Perhatikan tabel berikut:<br>Fungsi yang tepat untuk mencari nama barang berdasarkan kode adalah ....",
+                media: KOPERASI_TABLES_MEDIA,
+                options: {
+                    A: "HLOOKUP",
+                    B: "VLOOKUP",
+                    C: "COUNT",
+                    D: "FILTER"
+                },
+                answer: "B"
+            },
+            {
+                no: 9,
+                text: "Perhatikan tabel dan rumus berikut:<br>Pada fungsi/rumus tersebut, yang dimaksud dengan <strong>Indeks</strong> ditunjukkan pada nomor ....",
+                media: KOPERASI_TABLES_MEDIA + VLOOKUP_FORMULA_MEDIA,
+                options: {
+                    A: "1",
+                    B: "2",
+                    C: "3",
+                    D: "4"
+                },
+                answer: "C"
+            },
+            {
+                no: 10,
+                text: "Yang dimaksud dengan <strong>Indeks</strong> dalam fungsi VLOOKUP/HLOOKUP adalah ....",
+                options: {
+                    A: "Kolom terakhir pada setiap tabel data",
+                    B: "Sebagai Kata Kunci",
+                    C: "Nomor urut kolom dari kiri ke kanan yang datanya ingin ditampilkan saat data acuan ditemukan.",
+                    D: "Kolom pertama pada setiap tabel data"
+                },
+                answer: "C"
+            },
+            {
+                no: 11,
+                text: "Pada gambar deretan fungsi/rumus di bawah ini, yang dimaksud dengan <strong>sel acuan</strong> ditunjukkan nomor ....",
+                media: VLOOKUP_FORMULA_MEDIA,
+                options: {
+                    A: "1",
+                    B: "2",
+                    C: "3",
+                    D: "4"
+                },
+                answer: "A"
+            },
+            {
+                no: 12,
+                text: "Yang dimaksud dengan <strong>Sel Acuan</strong> adalah ....",
+                options: {
+                    A: "Kolom pertama pada setiap tabel data",
+                    B: "Nomor urut kolom dari kiri ke kanan yang datanya ingin ditampilkan saat data acuan ditemukan",
+                    C: "Sel yang berisi nilai kunci atau data pembanding yang dicari pada kolom pertama tabel referensi",
+                    D: "Sel yang berisi tentang data"
+                },
+                answer: "C"
+            },
+            {
+                no: 13,
+                text: "Ketika proses input data perlu adanya tindakan pemeriksaan untuk memastikan bahwa data yang dimasukkan atau digunakan sudah akurat, konsisten, dan sesuai dengan aturan atau format yang ditentukan sebelum diolah lebih lanjut. Tindakan tersebut disebut juga ....",
+                options: {
+                    A: "Pengelompokan Data",
+                    B: "Sort",
+                    C: "Filter",
+                    D: "Validasi Data"
+                },
+                answer: "D"
+            },
+            {
+                no: 14,
+                text: "Jika seorang guru ingin menampilkan hanya data siswa yang memperoleh nilai &ge; 80, fitur yang paling tepat digunakan adalah ....",
+                options: {
+                    A: "Sort",
+                    B: "Filter",
+                    C: "HLOOKUP",
+                    D: "COUNT"
+                },
+                answer: "B"
+            },
+            {
+                no: 15,
+                text: "Perhatikan gambar tabel spreadsheet berikut!<br>Pada gambar berikut, menu filter aktif berdasarkan kolom ....",
+                media: `
+                    <div class="my-3 border border-slate-300 rounded-xl overflow-hidden bg-white shadow-xs">
+                        <div class="bg-slate-100 px-3 py-1.5 border-b border-slate-300 flex items-center space-x-2 text-xs font-mono">
+                            <span class="font-bold text-slate-700 pr-2 border-r border-slate-300">L1</span>
+                            <span class="text-slate-400 italic font-serif">fx</span>
+                            <span class="text-slate-700">SAMPEL DATA NILAI</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="excel-grid w-full text-xs">
+                                <thead>
+                                    <tr class="bg-slate-200 text-slate-600 font-mono text-[10px]">
+                                        <th class="px-2 py-0.5"></th>
+                                        <th class="px-2 py-0.5">L</th>
+                                        <th class="px-2 py-0.5">M</th>
+                                        <th class="px-2 py-0.5">N</th>
+                                        <th class="px-2 py-0.5">O</th>
+                                        <th class="px-2 py-0.5">P</th>
+                                        <th class="px-2 py-0.5">Q</th>
+                                        <th class="px-2 py-0.5">R</th>
+                                        <th class="px-2 py-0.5">S</th>
+                                    </tr>
+                                    <tr class="bg-emerald-900 text-white font-bold">
+                                        <th class="bg-slate-200 text-slate-600 font-mono text-[10px]">3</th>
+                                        <th class="px-2 py-2 text-center"><i class="fa-solid fa-bars-staggered text-emerald-300 text-[10px]"></i></th>
+                                        <th class="px-3 py-2 text-left whitespace-nowrap">Nama Siswa <i class="fa-solid fa-bars-staggered text-emerald-300 text-[10px] ml-1"></i></th>
+                                        <th class="px-3 py-2 text-left whitespace-nowrap bg-emerald-800">
+                                            Kelas <span class="inline-flex items-center justify-center w-4 h-4 rounded bg-white text-emerald-900 ml-1"><i class="fa-solid fa-filter text-[9px]"></i></span>
+                                        </th>
+                                        <th class="px-2 py-2 text-center whitespace-nowrap">L/P <i class="fa-solid fa-bars-staggered text-emerald-300 text-[10px] ml-1"></i></th>
+                                        <th class="px-3 py-2 text-right whitespace-nowrap">Matematika <i class="fa-solid fa-bars-staggered text-emerald-300 text-[10px] ml-1"></i></th>
+                                        <th class="px-3 py-2 text-right whitespace-nowrap">Bahasa Indonesia <i class="fa-solid fa-bars-staggered text-emerald-300 text-[10px] ml-1"></i></th>
+                                        <th class="px-3 py-2 text-right whitespace-nowrap">IPA <i class="fa-solid fa-bars-staggered text-emerald-300 text-[10px] ml-1"></i></th>
+                                        <th class="px-3 py-2 text-right whitespace-nowrap">Kehadiran (%) <i class="fa-solid fa-bars-staggered text-emerald-300 text-[10px] ml-1"></i></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="bg-slate-200 text-slate-600 font-mono text-center text-[10px]">14</td><td class="px-2 py-1.5 text-center">11</td><td class="px-3 py-1.5">Kiki</td><td class="px-3 py-1.5 font-medium">VII-C</td><td class="px-2 py-1.5 text-center">P</td><td class="px-3 py-1.5 text-right">95</td><td class="px-3 py-1.5 text-right">92</td><td class="px-3 py-1.5 text-right">94</td><td class="px-3 py-1.5 text-right">100</td></tr>
+                                    <tr class="bg-emerald-50/40"><td class="bg-slate-200 text-slate-600 font-mono text-center text-[10px]">15</td><td class="px-2 py-1.5 text-center">12</td><td class="px-3 py-1.5">Lina</td><td class="px-3 py-1.5 font-medium">VII-C</td><td class="px-2 py-1.5 text-center">P</td><td class="px-3 py-1.5 text-right">89</td><td class="px-3 py-1.5 text-right">90</td><td class="px-3 py-1.5 text-right">91</td><td class="px-3 py-1.5 text-right">96</td></tr>
+                                    <tr><td class="bg-slate-200 text-slate-600 font-mono text-center text-[10px]">16</td><td class="px-2 py-1.5 text-center">13</td><td class="px-3 py-1.5">Maman</td><td class="px-3 py-1.5 font-medium">VII-C</td><td class="px-2 py-1.5 text-center">L</td><td class="px-3 py-1.5 text-right">76</td><td class="px-3 py-1.5 text-right">74</td><td class="px-3 py-1.5 text-right">80</td><td class="px-3 py-1.5 text-right">90</td></tr>
+                                    <tr class="bg-emerald-50/40"><td class="bg-slate-200 text-slate-600 font-mono text-center text-[10px]">17</td><td class="px-2 py-1.5 text-center">14</td><td class="px-3 py-1.5">Nia</td><td class="px-3 py-1.5 font-medium">VII-C</td><td class="px-2 py-1.5 text-center">P</td><td class="px-3 py-1.5 text-right">84</td><td class="px-3 py-1.5 text-right">87</td><td class="px-3 py-1.5 text-right">85</td><td class="px-3 py-1.5 text-right">95</td></tr>
+                                    <tr><td class="bg-slate-200 text-slate-600 font-mono text-center text-[10px]">18</td><td class="px-2 py-1.5 text-center">15</td><td class="px-3 py-1.5">Oki</td><td class="px-3 py-1.5 font-medium">VII-C</td><td class="px-2 py-1.5 text-center">L</td><td class="px-3 py-1.5 text-right">68</td><td class="px-3 py-1.5 text-right">72</td><td class="px-3 py-1.5 text-right">70</td><td class="px-3 py-1.5 text-right">86</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `,
+                options: {
+                    A: "Nomor Urut",
+                    B: "Nama Siswa",
+                    C: "Kelas",
+                    D: "Gender (L/P)"
+                },
+                answer: "C"
+            },
+            {
+                no: 16,
+                text: "Fitur <code class='px-1.5 py-0.5 bg-slate-100 rounded font-mono text-academic-700 font-semibold'>Sort</code> digunakan untuk ....",
+                options: {
+                    A: "Menyaring data tertentu",
+                    B: "Mengurutkan data",
+                    C: "Menghapus data",
+                    D: "Membuat gambar"
+                },
+                answer: "B"
+            },
+            {
+                no: 17,
+                text: "Jika nama siswa ingin diurutkan dari A sampai Z, jenis Sort yang digunakan adalah ....",
+                options: {
+                    A: "Descending",
+                    B: "Ascending",
+                    C: "Random",
+                    D: "Filtering"
+                },
+                answer: "B"
+            },
+            {
+                no: 18,
+                text: "Data pilihan kegiatan siswa adalah: Pramuka 40%, Futsal 30%, Seni 20%, dan Musik 10%. Grafik yang paling sesuai untuk menunjukkan perbandingan bagian terhadap keseluruhan adalah ....",
+                options: {
+                    A: "Grafik Batang",
+                    B: "Grafik Garis",
+                    C: "Grafik Lingkaran",
+                    D: "Grafik Scatter"
+                },
+                answer: "C"
+            },
+            {
+                no: 19,
+                text: "Penyajian data dalam bentuk tabel memiliki manfaat utama untuk ....",
+                options: {
+                    A: "Membuat data lebih sulit dibaca",
+                    B: "Memudahkan membaca dan membandingkan data",
+                    C: "Menghilangkan seluruh data",
+                    D: "Mengubah data menjadi suara"
+                },
+                answer: "B"
+            },
+            {
+                no: 20,
+                text: "Perhatikan tabel berikut!<br>Jika data diurutkan berdasarkan <strong>Nilai dari terbesar ke terkecil</strong>, urutan nama yang benar adalah ....",
+                media: `
+                    <div class="my-3 inline-block border border-slate-300 rounded-xl overflow-hidden bg-white shadow-xs">
+                        <table class="excel-grid text-sm">
+                            <thead>
+                                <tr class="bg-slate-200 text-slate-600 text-xs font-mono">
+                                    <th class="w-9 py-1 text-center bg-slate-300"></th>
+                                    <th class="w-32 py-1 text-center font-bold">A</th>
+                                    <th class="w-28 py-1 text-center font-bold">B</th>
+                                </tr>
+                                <tr class="bg-blue-100 text-slate-900 font-bold">
+                                    <th class="bg-slate-200 text-slate-600 text-xs font-mono py-1">1</th>
+                                    <th class="px-3 py-1.5 text-center">Nama</th>
+                                    <th class="px-3 py-1.5 text-center">Nilai</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="bg-slate-200 text-slate-600 text-xs font-mono text-center py-1">2</td><td class="px-3 py-1.5">Andi</td><td class="px-3 py-1.5 text-right font-mono">80</td></tr>
+                                <tr><td class="bg-slate-200 text-slate-600 text-xs font-mono text-center py-1">3</td><td class="px-3 py-1.5">Budi</td><td class="px-3 py-1.5 text-right font-mono">90</td></tr>
+                                <tr><td class="bg-slate-200 text-slate-600 text-xs font-mono text-center py-1">4</td><td class="px-3 py-1.5">Citra</td><td class="px-3 py-1.5 text-right font-mono">75</td></tr>
+                                <tr><td class="bg-slate-200 text-slate-600 text-xs font-mono text-center py-1">5</td><td class="px-3 py-1.5">Deni</td><td class="px-3 py-1.5 text-right font-mono">8</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `,
+                options: {
+                    A: "Andi, Budi, Citra, Deni",
+                    B: "Budi, Andi, Citra, Deni",
+                    C: "Citra, Andi, Deni, Budi",
+                    D: "Deni, Citra, Andi, Budi"
+                },
+                answer: "B"
+            },
+            {
+                no: 21,
+                text: "Raka mendapatkan tugas membuat laporan tentang dampak penggunaan kecerdasan artifisial dalam pendidikan. Ia melakukan pencarian menggunakan mesin pencari dan mendapatkan tiga sumber informasi berikut.<br>Raka ingin menggunakan informasi yang paling dapat dipercaya sebagai referensi tugasnya. Tindakan yang paling tepat adalah ....",
+                media: `
+                    <div class="my-3 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                        <!-- Ilustrasi Layar Pencarian -->
+                        <div class="bg-gradient-to-br from-sky-50 to-indigo-50 border border-slate-200 rounded-2xl p-4 shadow-xs">
+                            <div class="bg-white rounded-xl border-2 border-slate-700 p-3 shadow-sm">
+                                <div class="flex items-center justify-between border border-blue-400 rounded-lg px-3 py-1.5 mb-3 bg-slate-50">
+                                    <span class="text-xs sm:text-sm font-semibold text-slate-800">AI di Pendidikan</span>
+                                    <span class="w-6 h-6 rounded bg-blue-500 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                </div>
+                                <div class="space-y-2 text-xs sm:text-sm">
+                                    <div class="flex items-center space-x-2.5 p-1.5 rounded-lg bg-amber-50/60 border border-amber-200/70">
+                                        <span class="w-6 h-6 rounded-full bg-amber-100 text-amber-700 font-extrabold flex items-center justify-center text-xs">A</span>
+                                        <span class="font-semibold text-slate-800">Situs Resmi</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2.5 p-1.5 rounded-lg bg-slate-50 border border-slate-200/70">
+                                        <span class="w-6 h-6 rounded-full bg-orange-100 text-orange-700 font-extrabold flex items-center justify-center text-xs">B</span>
+                                        <span class="font-semibold text-slate-800">Blog Pribadi</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2.5 p-1.5 rounded-lg bg-slate-50 border border-slate-200/70">
+                                        <span class="w-6 h-6 rounded-full bg-rose-100 text-rose-700 font-extrabold flex items-center justify-center text-xs">C</span>
+                                        <span class="font-semibold text-slate-800">Media Sosial</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabel Keterangan Sumber -->
+                        <div class="border border-slate-300 rounded-xl overflow-hidden bg-white shadow-xs">
+                            <table class="w-full text-xs sm:text-sm border-collapse">
+                                <thead>
+                                    <tr class="bg-academic-100 text-academic-900 border-b border-slate-300">
+                                        <th class="px-3 py-2 text-center w-20 border-r border-slate-300">Sumber</th>
+                                        <th class="px-3 py-2 text-left">Informasi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200">
+                                    <tr>
+                                        <td class="px-3 py-2 text-center font-bold border-r border-slate-200">A</td>
+                                        <td class="px-3 py-2">Artikel dari situs resmi lembaga pendidikan, dilengkapi data dan referensi</td>
+                                    </tr>
+                                    <tr class="bg-slate-50">
+                                        <td class="px-3 py-2 text-center font-bold border-r border-slate-200">B</td>
+                                        <td class="px-3 py-2">Tulisan blog anonim tanpa mencantumkan sumber</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 text-center font-bold border-r border-slate-200">C</td>
+                                        <td class="px-3 py-2">Unggahan media sosial yang hanya berisi opini pribadi</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `,
+                options: {
+                    A: "Menggunakan sumber B karena bahasanya lebih sederhana",
+                    B: "Menggunakan sumber C karena informasinya mudah ditemukan",
+                    C: "Memprioritaskan sumber A dan memeriksa kesesuaian informasi dengan sumber lain yang terpercaya",
+                    D: "Menggabungkan ketiga sumber tanpa memeriksa kebenarannya"
+                },
+                answer: "C"
+            },
+            {
+                no: 22,
+                text: "Andi ingin mencari informasi tentang manfaat teknologi kecerdasan artifisial dalam dunia pendidikan. Ia membuka Google dan mengetikkan kata kunci yang sesuai. Fungsi utama Google dalam kegiatan tersebut adalah ....",
+                options: {
+                    A: "Mengatur perangkat keras komputer",
+                    B: "Menyimpan seluruh data pribadi pengguna",
+                    C: "Membantu menemukan informasi melalui mesin pencari",
+                    D: "Melindungi komputer dari serangan virus"
+                },
+                answer: "C"
+            },
+            {
+                no: 23,
+                text: "Dewi mencari materi tentang dampak penggunaan internet bagi pelajar. Hasil pencarian yang muncul sangat banyak dan sebagian tidak sesuai dengan kebutuhannya. Strategi pencarian yang paling tepat dilakukan Dewi adalah ....",
+                options: {
+                    A: "Mengetikkan kata kunci yang lebih spesifik, seperti \"dampak positif dan negatif internet bagi pelajar SMP\"",
+                    B: "Membuka semua website yang muncul tanpa membaca judulnya",
+                    C: "Menggunakan kata kunci yang sangat umum, seperti \"internet\"",
+                    D: "Memilih hasil pencarian secara acak"
+                },
+                answer: "A"
+            },
+            {
+                no: 24,
+                text: "Budi menemukan dua artikel tentang bahaya penggunaan media sosial. Artikel pertama diterbitkan oleh lembaga pendidikan resmi dan mencantumkan sumber referensi. Artikel kedua berasal dari blog anonim tanpa sumber yang jelas. Langkah terbaik yang harus dilakukan Budi adalah ....",
+                options: {
+                    A: "Memilih artikel kedua karena tampilannya lebih menarik",
+                    B: "Memilih artikel dengan judul yang paling panjang",
+                    C: "Menggabungkan informasi dari kedua artikel tanpa pemeriksaan",
+                    D: "Memprioritaskan artikel pertama dan memeriksa kembali kebenaran informasinya"
+                },
+                answer: "D"
+            },
+            {
+                no: 25,
+                text: "Sinta ingin mencari dokumen PDF tentang keamanan digital untuk tugas sekolah. Ia ingin hasil pencariannya lebih terarah dan sesuai kebutuhan. Teknik pencarian yang paling efektif adalah ....",
+                options: {
+                    A: "Mengetikkan kata \"komputer\" pada mesin pencari",
+                    B: "Menggunakan kata kunci \"keamanan digital\" filetype:pdf",
+                    C: "Membuka seluruh hasil pencarian tanpa penyaringan",
+                    D: "Mencari menggunakan nama aplikasi permainan"
+                },
+                answer: "B"
+            },
+            {
+                no: 26,
+                type: "complex",
+                text: "Perhatikan situasi berikut!<br>Nadia menerima pesan yang mengatasnamakan penyedia layanan pendidikan digital. Pesan tersebut menyatakan bahwa akunnya akan dinonaktifkan jika tidak segera melakukan verifikasi melalui tautan yang diberikan. Nadia diminta memasukkan kata sandi dan kode OTP.<br><strong>Berdasarkan situasi tersebut, pilihlah semua tindakan yang tepat!</strong> <span class='text-xs font-semibold text-academic-700'>(Pilih lebih dari satu jawaban benar)</span>",
+                media: `
+                    <div class="my-3 max-w-sm bg-gradient-to-br from-rose-50 via-amber-50 to-slate-100 border border-rose-200 rounded-2xl p-4 shadow-xs">
+                        <div class="bg-white border-4 border-slate-800 rounded-2xl p-4 text-center shadow-md">
+                            <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-2 text-2xl">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <p class="font-extrabold text-slate-900 text-sm sm:text-base leading-snug">Akun akan dinonaktifkan!</p>
+                            <p class="text-xs text-slate-600 mt-2">Verifikasi sekarang:</p>
+                            <div class="mt-1.5 px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-200 text-blue-700 font-mono text-xs font-bold">
+                                bit.ly/verifikasi
+                            </div>
+                        </div>
+                    </div>
+                `,
+                options: {
+                    A: "Tidak mengklik tautan mencurigakan yang diberikan",
+                    B: "Memberikan kode OTP agar akun tidak dinonaktifkan",
+                    C: "Memeriksa kebenaran pesan melalui website atau layanan resmi",
+                    D: "Mengganti kata sandi jika terlanjur memasukkan informasi akun pada tautan mencurigakan"
+                },
+                answer: ["A", "C", "D"]
+            },
+            {
+                no: 27,
+                text: "Nina menggunakan kata sandi yang sama untuk akun email, media sosial, dan aplikasi belajar. Suatu hari, salah satu akunnya diketahui mengalami kebocoran data. Risiko utama dari kebiasaan Nina adalah ....",
+                options: {
+                    A: "Semua akun berpotensi diakses pihak lain jika kata sandi tersebut diketahui",
+                    B: "Semua akun otomatis menjadi lebih aman",
+                    C: "Kapasitas penyimpanan perangkat bertambah",
+                    D: "Koneksi internet menjadi lebih cepat"
+                },
+                answer: "A"
+            },
+            {
+                no: 28,
+                text: "Rudi menerima pesan melalui email yang mengatasnamakan sebuah bank. Pesan tersebut meminta Rudi mengklik tautan dan memasukkan nama pengguna, kata sandi, serta kode OTP. Tindakan paling tepat yang harus dilakukan Rudi adalah ....",
+                options: {
+                    A: "Segera mengisi seluruh informasi yang diminta",
+                    B: "Meneruskan pesan kepada seluruh teman",
+                    C: "Membalas pesan dengan memberikan kode OTP",
+                    D: "Tidak mengklik tautan, tidak memberikan data, dan memeriksa informasi melalui saluran resmi"
+                },
+                answer: "D"
+            },
+            {
+                no: 29,
+                text: "Seorang peserta didik mengunggah foto kartu pelajarnya ke media sosial. Foto tersebut memperlihatkan nama lengkap, tanggal lahir, nomor induk siswa, dan identitas sekolah. Mengapa tindakan tersebut berisiko?",
+                options: {
+                    A: "Foto kartu pelajar akan membuat internet menjadi lambat",
+                    B: "Informasi pribadi dapat disalahgunakan oleh pihak yang tidak bertanggung jawab",
+                    C: "Akun media sosial akan otomatis terhapus",
+                    D: "Semua aplikasi di ponsel akan berhenti bekerja"
+                },
+                answer: "B"
+            },
+            {
+                no: 30,
+                text: "Saat menggunakan aplikasi baru, Dika mendapatkan permintaan akses kamera, mikrofon, kontak, dan lokasi. Padahal, aplikasi tersebut hanya digunakan untuk membaca dokumen PDF. Sikap yang paling tepat adalah ....",
+                options: {
+                    A: "Memberikan semua izin agar aplikasi bekerja maksimal",
+                    B: "Mengizinkan akses tanpa membaca keterangan",
+                    C: "Menolak izin yang tidak relevan dan hanya memberikan akses sesuai kebutuhan",
+                    D: "Membagikan akun aplikasi kepada teman"
+                },
+                answer: "C"
+            }
+        ];
+
+        // STATE APLIKASI
+        let state = {
+            student: { name: '', id: '', className: '' },
+            currentIndex: 0,
+            // Untuk soal tunggal: string ('A'|'B'|'C'|'D'|null). Untuk soal kompleks (no 26): array (['A','C']|[])
+            answers: QUESTIONS.map(q => q.type === 'complex' ? [] : null),
+            doubts: new Array(30).fill(false),
+            timeLeft: 60 * 60, // 60 menit dalam detik
+            timerInterval: null,
+            lastResultPayload: null
+        };
+
+        const STORAGE_KEY_WEBHOOK = 'psas_inf8_webhook_url';
+        const STORAGE_KEY_RESULTS = 'psas_inf8_local_results';
+        const TEACHER_PIN = '1234';
+
+        // INISIALISASI SAAT HALAMAN DIMUAT
+        window.addEventListener('DOMContentLoaded', () => {
+            updateWebhookBadge();
+            renderNavGrid();
+        });
+
+        function isQuestionAnswered(index) {
+            const ans = state.answers[index];
+            if (Array.isArray(ans)) return ans.length > 0;
+            return ans !== null && ans !== '';
+        }
+
+        function checkAnswerCorrect(question, userAns) {
+            if (question.type === 'complex') {
+                if (!Array.isArray(userAns) || userAns.length !== question.answer.length) return false;
+                const sortedUser = [...userAns].sort().join(',');
+                const sortedKey = [...question.answer].sort().join(',');
+                return sortedUser === sortedKey;
+            }
+            return userAns === question.answer;
+        }
+
+        function formatAnswerDisplay(ans) {
+            if (Array.isArray(ans)) {
+                return ans.length > 0 ? [...ans].sort().join(', ') : '-';
+            }
+            return ans || '-';
+        }
+
+        function updateWebhookBadge() {
+            const url = localStorage.getItem(STORAGE_KEY_WEBHOOK);
+            const dot = document.getElementById('webhook-dot');
+            const text = document.getElementById('webhook-status-text');
+            if (url && url.startsWith('http')) {
+                dot.className = 'w-2 h-2 rounded-full bg-emerald-400';
+                text.textContent = 'Spreadsheet Aktif';
+            } else {
+                dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+                text.textContent = 'Mode Lokal / CSV';
+            }
+        }
+
+        // MULAI UJIAN
+        function startExam(e) {
+            e.preventDefault();
+            const name = document.getElementById('student-name').value.trim();
+            const id = document.getElementById('student-id').value.trim();
+            const className = document.getElementById('student-class').value;
+
+            if (!name || !id || !className) return;
+
+            state.student = { name, id, className };
+            state.currentIndex = 0;
+            state.answers = QUESTIONS.map(q => q.type === 'complex' ? [] : null);
+            state.doubts = new Array(30).fill(false);
+            state.timeLeft = 60 * 60;
+
+            // Tampilkan Identitas di Header Ujian
+            document.getElementById('exam-student-name').textContent = name;
+            document.getElementById('exam-student-id').textContent = id;
+            document.getElementById('exam-student-class').textContent = className;
+            document.getElementById('exam-avatar').textContent = name.charAt(0).toUpperCase();
+
+            // Ganti tampilan ke Ujian
+            document.getElementById('view-login').classList.add('hidden');
+            document.getElementById('view-result').classList.add('hidden');
+            document.getElementById('view-exam').classList.remove('hidden');
+            document.getElementById('header-timer').classList.remove('hidden');
+            document.getElementById('header-timer').classList.add('flex');
+
+            renderQuestion(0);
+            updateNavGrid();
+            startTimer();
+        }
+
+        // TIMER HITUNG MUNDUR
+        function startTimer() {
+            clearInterval(state.timerInterval);
+            updateTimerDisplay();
+            state.timerInterval = setInterval(() => {
+                state.timeLeft--;
+                updateTimerDisplay();
+                if (state.timeLeft <= 0) {
+                    clearInterval(state.timerInterval);
+                    showToast('Waktu ujian habis! Jawaban otomatis dikirim.', 'warning');
+                    finishExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(state.timeLeft / 60);
+            const secs = state.timeLeft % 60;
+            const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            const displayEl = document.getElementById('timer-display');
+            displayEl.textContent = formatted;
+
+            const badge = document.getElementById('header-timer');
+            if (state.timeLeft <= 300) {
+                badge.classList.remove('bg-white/15');
+                badge.classList.add('bg-rose-600', 'border-rose-400');
+            }
+        }
+
+        // RENDER SOAL SAAT INI
+        function renderQuestion(index) {
+            state.currentIndex = index;
+            const q = QUESTIONS[index];
+            const isComplex = q.type === 'complex';
+
+            document.getElementById('current-q-num').textContent = q.no;
+            document.getElementById('question-text').innerHTML = q.text;
+
+            // Lencana Jenis Soal
+            const typeBadge = document.getElementById('question-type-badge');
+            if (isComplex) {
+                typeBadge.innerHTML = '<i class="fa-solid fa-square-check mr-1"></i>Pilihan Ganda Kompleks (Pilih lebih dari satu)';
+                typeBadge.className = 'text-xs font-bold px-3 py-1 rounded-lg bg-indigo-100 text-indigo-800 border border-indigo-200';
+            } else {
+                typeBadge.textContent = 'Pilihan Ganda';
+                typeBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-200/70 text-slate-600';
+            }
+
+            // Render Media (Tabel / Visual / Grid Excel)
+            const mediaContainer = document.getElementById('question-media');
+            if (q.media) {
+                mediaContainer.innerHTML = q.media;
+                mediaContainer.classList.remove('hidden');
+            } else {
+                mediaContainer.innerHTML = '';
+                mediaContainer.classList.add('hidden');
+            }
+
+            // Badge Ragu-ragu
+            const doubtBadge = document.getElementById('doubt-badge');
+            const btnDoubt = document.getElementById('btn-doubt');
+            if (state.doubts[index]) {
+                doubtBadge.classList.remove('hidden');
+                btnDoubt.classList.add('bg-amber-400', 'text-amber-950', 'border-amber-500');
+                btnDoubt.classList.remove('bg-amber-50', 'text-amber-800');
+            } else {
+                doubtBadge.classList.add('hidden');
+                btnDoubt.classList.remove('bg-amber-400', 'text-amber-950', 'border-amber-500');
+                btnDoubt.classList.add('bg-amber-50', 'text-amber-800');
+            }
+
+            // Render Pilihan A, B, C, D
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            const keys = ['A', 'B', 'C', 'D'];
+
+            keys.forEach(key => {
+                const isSelected = isComplex
+                    ? state.answers[index].includes(key)
+                    : state.answers[index] === key;
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => selectOption(key);
+                btn.className = `w-full text-left p-3.5 sm:p-4 rounded-2xl border-2 transition flex items-start space-x-3.5 group ${
+                    isSelected
+                        ? 'border-academic-600 bg-academic-50/80 shadow-xs'
+                        : 'border-slate-200 hover:border-academic-300 hover:bg-slate-50'
+                }`;
+
+                const indicatorIcon = isComplex
+                    ? `<span class="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 transition ${
+                        isSelected
+                            ? 'bg-academic-600 text-white shadow-xs'
+                            : 'bg-slate-100 text-slate-600 group-hover:bg-academic-100 group-hover:text-academic-700'
+                    }"><i class="fa-solid ${isSelected ? 'fa-check' : 'fa-plus text-xs opacity-60'}"></i></span>`
+                    : `<span class="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 transition ${
+                        isSelected
+                            ? 'bg-academic-600 text-white shadow-xs'
+                            : 'bg-slate-100 text-slate-600 group-hover:bg-academic-100 group-hover:text-academic-700'
+                    }">${key}</span>`;
+
+                btn.innerHTML = `
+                    ${indicatorIcon}
+                    <span class="pt-1 text-sm sm:text-base font-medium ${isSelected ? 'text-academic-950 font-semibold' : 'text-slate-700'}">
+                        ${isComplex ? `<strong class="mr-1.5">${key}.</strong>` : ''}${q.options[key]}
+                    </span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+
+            // Atur Tombol Navigasi Bawah
+            document.getElementById('btn-prev').disabled = (index === 0);
+            if (index === QUESTIONS.length - 1) {
+                document.getElementById('btn-next').classList.add('hidden');
+                document.getElementById('btn-finish').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-next').classList.remove('hidden');
+                document.getElementById('btn-finish').classList.add('hidden');
+            }
+
+            updateNavGrid();
+        }
+
+        function selectOption(key) {
+            const q = QUESTIONS[state.currentIndex];
+            if (q.type === 'complex') {
+                const currentArr = state.answers[state.currentIndex];
+                const pos = currentArr.indexOf(key);
+                if (pos === -1) {
+                    currentArr.push(key);
+                } else {
+                    currentArr.splice(pos, 1);
+                }
+            } else {
+                state.answers[state.currentIndex] = key;
+            }
+            renderQuestion(state.currentIndex);
+        }
+
+        function toggleDoubt() {
+            state.doubts[state.currentIndex] = !state.doubts[state.currentIndex];
+            renderQuestion(state.currentIndex);
+        }
+
+        function prevQuestion() {
+            if (state.currentIndex > 0) {
+                renderQuestion(state.currentIndex - 1);
+            }
+        }
+
+        function nextQuestion() {
+            if (state.currentIndex < QUESTIONS.length - 1) {
+                renderQuestion(state.currentIndex + 1);
+            }
+        }
+
+        // NAVIGASI NOMOR 1 - 30
+        function renderNavGrid() {
+            const grid = document.getElementById('question-nav-grid');
+            grid.innerHTML = '';
+            for (let i = 0; i < 30; i++) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = i + 1;
+                btn.onclick = () => renderQuestion(i);
+                btn.id = `nav-btn-${i}`;
+                btn.className = 'h-10 rounded-xl font-bold text-xs sm:text-sm border transition flex items-center justify-center';
+                grid.appendChild(btn);
+            }
+        }
+
+        function updateNavGrid() {
+            let answeredCount = 0;
+            let doubtCount = 0;
+            let unansweredCount = 0;
+
+            for (let i = 0; i < 30; i++) {
+                const btn = document.getElementById(`nav-btn-${i}`);
+                if (!btn) continue;
+
+                const isCurrent = (i === state.currentIndex);
+                const isDoubt = state.doubts[i];
+                const isAnswered = isQuestionAnswered(i);
+
+                if (isDoubt) doubtCount++;
+                else if (isAnswered) answeredCount++;
+                else unansweredCount++;
+
+                let baseClass = 'h-10 rounded-xl font-bold text-xs sm:text-sm transition flex items-center justify-center ';
+                if (isDoubt) {
+                    baseClass += 'bg-amber-400 text-amber-950 border-amber-500 ';
+                } else if (isAnswered) {
+                    baseClass += 'bg-emerald-500 text-white border-emerald-600 ';
+                } else {
+                    baseClass += 'bg-slate-100 text-slate-600 border-slate-300 hover:bg-slate-200 ';
+                }
+
+                if (isCurrent) {
+                    baseClass += 'ring-2 ring-offset-2 ring-academic-600 scale-105 ';
+                }
+
+                btn.className = baseClass;
+            }
+
+            document.getElementById('answered-count').textContent = answeredCount + doubtCount;
+            document.getElementById('legend-answered').textContent = answeredCount;
+            document.getElementById('legend-doubt').textContent = doubtCount;
+            document.getElementById('legend-unanswered').textContent = unansweredCount;
+        }
+
+        // KONFIRMASI SELESAI UJIAN
+        function confirmFinishExam() {
+            let unanswered = 0;
+            for (let i = 0; i < 30; i++) {
+                if (!isQuestionAnswered(i)) unanswered++;
+            }
+            const doubts = state.doubts.filter(d => d === true).length;
+            let msg = 'Apakah kamu yakin ingin menyelesaikan ujian dan mengirim jawaban sekarang?';
+
+            if (unanswered > 0 || doubts > 0) {
+                msg = `Perhatian: Masih ada <strong>${unanswered} soal belum dijawab</strong> dan <strong>${doubts} soal ditandai ragu-ragu</strong>. Yakin ingin tetap mengumpulkan?`;
+            }
+
+            document.getElementById('confirm-message').innerHTML = msg;
+            document.getElementById('modal-confirm').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('modal-confirm').classList.add('hidden');
+        }
+
+        // HITUNG NILAI & KIRIM KE SPREADSHEET
+        async function finishExam() {
+            closeConfirmModal();
+            clearInterval(state.timerInterval);
+
+            let correct = 0;
+            let wrong = 0;
+            const detailAnswers = [];
+            const reviewItems = [];
+
+            QUESTIONS.forEach((q, idx) => {
+                const rawAns = state.answers[idx];
+                const formattedAns = formatAnswerDisplay(rawAns);
+                const formattedKey = formatAnswerDisplay(q.answer);
+                const isCorrect = checkAnswerCorrect(q, rawAns);
+
+                detailAnswers.push(formattedAns);
+                if (isCorrect) correct++;
+                else wrong++;
+
+                reviewItems.push({
+                    no: q.no,
+                    userAns: formattedAns,
+                    keyAns: formattedKey,
+                    isCorrect: isCorrect,
+                    isComplex: q.type === 'complex'
+                });
+            });
+
+            // Rumus Nilai Maksimal 100 proporsional pembulatan 2 desimal
+            const finalScore = Math.round((correct / 30) * 100 * 100) / 100;
+
+            const now = new Date();
+            const timestamp = now.toLocaleString('id-ID', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
+
+            const payload = {
+                timestamp: timestamp,
+                noPeserta: state.student.id,
+                namaSiswa: state.student.name,
+                kelas: state.student.className,
+                benar: correct,
+                salah: wrong,
+                nilai: finalScore,
+                detailJawaban: detailAnswers,
+                synced: false
+            };
+
+            state.lastResultPayload = payload;
+
+            // Tampilkan Halaman Hasil
+            document.getElementById('view-exam').classList.add('hidden');
+            document.getElementById('header-timer').classList.add('hidden');
+            document.getElementById('header-timer').classList.remove('flex');
+            document.getElementById('view-result').classList.remove('hidden');
+
+            document.getElementById('res-correct').textContent = correct;
+            document.getElementById('res-wrong').textContent = wrong;
+            document.getElementById('res-score').textContent = finalScore;
+            document.getElementById('res-name').textContent = payload.namaSiswa;
+            document.getElementById('res-id').textContent = payload.noPeserta;
+            document.getElementById('res-class').textContent = payload.kelas;
+            document.getElementById('res-timestamp').textContent = payload.timestamp;
+
+            renderReviewSection(reviewItems);
+            saveResultLocally(payload);
+            await sendPayloadToGoogleSheets(payload);
+        }
+
+        function renderReviewSection(reviewItems) {
+            const container = document.getElementById('review-answers-container');
+            container.innerHTML = reviewItems.map(item => `
+                <div class="py-2.5 flex items-center justify-between gap-2">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="w-7 h-7 rounded-lg font-bold text-xs flex items-center justify-center ${
+                            item.isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                        }">${item.no}</span>
+                        <div>
+                            <span class="font-semibold text-slate-800">Jawaban Kamu: <span class="font-mono">${item.userAns}</span></span>
+                            ${item.isComplex ? '<span class="ml-1.5 text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold">Kompleks</span>' : ''}
+                            ${!item.isCorrect ? `<span class="block text-xs text-slate-500">Kunci Jawaban: <strong class="font-mono text-emerald-700">${item.keyAns}</strong></span>` : ''}
+                        </div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-bold ${
+                        item.isCorrect ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+                    }">
+                        ${item.isCorrect ? '<i class="fa-solid fa-check mr-1"></i>Benar' : '<i class="fa-solid fa-xmark mr-1"></i>Salah'}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        function toggleReviewSection() {
+            const box = document.getElementById('review-answers-container');
+            const chevron = document.getElementById('review-chevron');
+            box.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        function saveResultLocally(payload) {
+            try {
+                const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_RESULTS) || '[]');
+                existing.unshift(payload);
+                localStorage.setItem(STORAGE_KEY_RESULTS, JSON.stringify(existing));
+            } catch (err) {
+                console.error('Gagal menyimpan riwayat lokal:', err);
+            }
+        }
+
+        function markLocalResultSynced(timestamp, noPeserta) {
+            try {
+                const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_RESULTS) || '[]');
+                const idx = existing.findIndex(r => r.timestamp === timestamp && r.noPeserta === noPeserta);
+                if (idx !== -1) {
+                    existing[idx].synced = true;
+                    localStorage.setItem(STORAGE_KEY_RESULTS, JSON.stringify(existing));
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function sendPayloadToGoogleSheets(payload) {
+            const webhookUrl = localStorage.getItem(STORAGE_KEY_WEBHOOK);
+            const box = document.getElementById('sync-status-box');
+            const icon = document.getElementById('sync-icon');
+            const title = document.getElementById('sync-title');
+            const desc = document.getElementById('sync-desc');
+            const retryBtn = document.getElementById('btn-retry-sync');
+
+            if (!webhookUrl || !webhookUrl.startsWith('http')) {
+                box.className = 'rounded-2xl p-4 border flex items-center justify-between gap-3 bg-amber-50 border-amber-200 text-amber-900';
+                icon.className = 'fa-solid fa-database text-xl text-amber-600';
+                title.textContent = 'Tersimpan di Perangkat (URL Spreadsheet Belum Diatur)';
+                desc.textContent = 'Silakan unduh bukti/hasil CSV di bawah ini atau laporkan ke guru pengawas.';
+                retryBtn.classList.add('hidden');
+                return;
+            }
+
+            box.className = 'rounded-2xl p-4 border flex items-center justify-between gap-3 bg-blue-50 border-blue-200 text-blue-900';
+            icon.className = 'fa-solid fa-spinner fa-spin text-xl text-blue-600';
+            title.textContent = 'Mengirim hasil langsung ke Google Spreadsheet...';
+            desc.textContent = 'Menghubungkan ke server Google Apps Script...';
+            retryBtn.classList.add('hidden');
+
+            try {
+                await fetch(webhookUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                payload.synced = true;
+                markLocalResultSynced(payload.timestamp, payload.noPeserta);
+
+                box.className = 'rounded-2xl p-4 border flex items-center justify-between gap-3 bg-emerald-50 border-emerald-200 text-emerald-900';
+                icon.className = 'fa-solid fa-circle-check text-xl text-emerald-600';
+                title.textContent = 'Berhasil Terkirim ke Google Spreadsheet!';
+                desc.textContent = 'Nilai dan rincian jawaban kamu telah tercatat otomatis di lembar rekap guru.';
+                retryBtn.classList.add('hidden');
+            } catch (error) {
+                console.error('Error pengiriman Spreadsheet:', error);
+                box.className = 'rounded-2xl p-4 border flex items-center justify-between gap-3 bg-rose-50 border-rose-200 text-rose-900';
+                icon.className = 'fa-solid fa-circle-exclamation text-xl text-rose-600';
+                title.textContent = 'Gagal Mengirim Otomatis ke Spreadsheet';
+                desc.textContent = 'Periksa koneksi internet Anda lalu klik Kirim Ulang, atau unduh file CSV sebagai cadangan.';
+                retryBtn.classList.remove('hidden');
+            }
+        }
+
+        function retrySendToSpreadsheet() {
+            if (state.lastResultPayload) {
+                sendPayloadToGoogleSheets(state.lastResultPayload);
+            }
+        }
+
+        function resetToLogin() {
+            document.getElementById('login-form').reset();
+            document.getElementById('view-result').classList.add('hidden');
+            document.getElementById('review-answers-container').classList.add('hidden');
+            document.getElementById('view-login').classList.remove('hidden');
+            const badge = document.getElementById('header-timer');
+            badge.classList.remove('bg-rose-600', 'border-rose-400');
+            badge.classList.add('bg-white/15');
+        }
+
+        // UNDUH CSV (TUNGGAL & SEMUA REKAP)
+        function generateCSVContent(records) {
+            const headers = ['Waktu Kirim', 'Nama', 'No Peserta', 'Kelas', 'Benar', 'Salah', 'Nilai Akhir'];
+            for (let i = 1; i <= 30; i++) headers.push(`No ${i}`);
+
+            const rows = [headers.join(',')];
+            records.forEach(r => {
+                const escapeCSV = (val) => `"${String(val).replace(/"/g, '""')}"`;
+                const rowData = [
+                    escapeCSV(r.timestamp),
+                    escapeCSV(r.namaSiswa),
+                    escapeCSV(r.noPeserta),
+                    escapeCSV(r.kelas),
+                    r.benar,
+                    r.salah,
+                    r.nilai,
+                    ...(r.detailJawaban || []).map(ans => escapeCSV(ans))
+                ];
+                rows.push(rowData.join(','));
+            });
+            return '\uFEFF' + rows.join('\n');
+        }
+
+        function triggerCSVDownload(csvString, filename) {
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadSingleResultCSV() {
+            if (!state.lastResultPayload) return;
+            const csv = generateCSVContent([state.lastResultPayload]);
+            const safeName = state.lastResultPayload.namaSiswa.replace(/[^a-zA-Z0-9]/g, '_');
+            const safeClass = state.lastResultPayload.kelas.replace(/\s+/g, '_');
+            triggerCSVDownload(csv, `Hasil_PSAS_Inf8_${safeClass}_${safeName}.csv`);
+            showToast('File CSV hasil ujian berhasil diunduh!');
+        }
+
+        function exportAllResultsCSV() {
+            const records = JSON.parse(localStorage.getItem(STORAGE_KEY_RESULTS) || '[]');
+            if (records.length === 0) {
+                showToast('Belum ada data hasil ujian yang tersimpan.', 'warning');
+                return;
+            }
+            const csv = generateCSVContent(records);
+            triggerCSVDownload(csv, `Rekap_Nilai_PSAS_Informatika_8_${new Date().toISOString().slice(0,10)}.csv`);
+            showToast(`Berhasil mengekspor ${records.length} data siswa ke CSV!`);
+        }
+
+        // PANEL GURU & PENGATURAN WEBHOOK
+        function openTeacherAuth() {
+            document.getElementById('teacher-pin-input').value = '';
+            document.getElementById('pin-error-msg').classList.add('hidden');
+            document.getElementById('modal-teacher-pin').classList.remove('hidden');
+            setTimeout(() => document.getElementById('teacher-pin-input').focus(), 100);
+        }
+
+        function closeTeacherPinModal() {
+            document.getElementById('modal-teacher-pin').classList.add('hidden');
+        }
+
+        function verifyTeacherPin(e) {
+            e.preventDefault();
+            const pin = document.getElementById('teacher-pin-input').value.trim();
+            if (pin === TEACHER_PIN) {
+                closeTeacherPinModal();
+                openTeacherPanel();
+            } else {
+                document.getElementById('pin-error-msg').classList.remove('hidden');
+            }
+        }
+
+        function openTeacherPanel() {
+            const savedUrl = localStorage.getItem(STORAGE_KEY_WEBHOOK) || '';
+            document.getElementById('input-webhook-url').value = savedUrl;
+            document.getElementById('webhook-feedback').classList.add('hidden');
+            renderTeacherRekapTable();
+            switchTeacherTab('tab-webhook');
+            document.getElementById('modal-teacher-panel').classList.remove('hidden');
+        }
+
+        function closeTeacherPanel() {
+            document.getElementById('modal-teacher-panel').classList.add('hidden');
+        }
+
+        function switchTeacherTab(tabId) {
+            const tabs = ['tab-webhook', 'tab-rekap', 'tab-script'];
+            tabs.forEach(id => {
+                const el = document.getElementById(id);
+                const btn = document.getElementById('btn-' + id);
+                if (id === tabId) {
+                    el.classList.remove('hidden');
+                    btn.className = 'px-4 py-2.5 rounded-t-xl font-bold text-xs sm:text-sm bg-white text-academic-700 border-t border-x border-slate-200';
+                } else {
+                    el.classList.add('hidden');
+                    btn.className = 'px-4 py-2.5 rounded-t-xl font-semibold text-xs sm:text-sm text-slate-600 hover:text-slate-900';
+                }
+            });
+            if (tabId === 'tab-rekap') renderTeacherRekapTable();
+        }
+
+        function saveWebhookUrl() {
+            const url = document.getElementById('input-webhook-url').value.trim();
+            const fb = document.getElementById('webhook-feedback');
+            if (!url) {
+                fb.textContent = 'Masukkan URL Web App Google Apps Script terlebih dahulu.';
+                fb.className = 'rounded-xl p-3 text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200';
+                fb.classList.remove('hidden');
+                return;
+            }
+            localStorage.setItem(STORAGE_KEY_WEBHOOK, url);
+            updateWebhookBadge();
+            fb.textContent = 'URL Google Spreadsheet berhasil disimpan! Hasil ujian siswa kelas VIII akan otomatis dikirim ke Spreadsheet.';
+            fb.className = 'rounded-xl p-3 text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
+            fb.classList.remove('hidden');
+            showToast('URL Spreadsheet disimpan!');
+        }
+
+        function clearWebhookUrl() {
+            localStorage.removeItem(STORAGE_KEY_WEBHOOK);
+            document.getElementById('input-webhook-url').value = '';
+            updateWebhookBadge();
+            const fb = document.getElementById('webhook-feedback');
+            fb.textContent = 'URL Spreadsheet dihapus. Aplikasi beralih ke Mode Lokal / Unduh CSV.';
+            fb.className = 'rounded-xl p-3 text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-300';
+            fb.classList.remove('hidden');
+        }
+
+        async function testWebhookConnection() {
+            const url = document.getElementById('input-webhook-url').value.trim();
+            const fb = document.getElementById('webhook-feedback');
+            if (!url || !url.startsWith('http')) {
+                fb.textContent = 'Masukkan URL Web App yang valid terlebih dahulu sebelum melakukan tes.';
+                fb.className = 'rounded-xl p-3 text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200';
+                fb.classList.remove('hidden');
+                return;
+            }
+
+            fb.textContent = 'Menguji koneksi & mengirim data uji coba ke Google Spreadsheet...';
+            fb.className = 'rounded-xl p-3 text-xs font-semibold bg-blue-50 text-blue-800 border border-blue-200';
+            fb.classList.remove('hidden');
+
+            const dummyPayload = {
+                timestamp: new Date().toLocaleString('id-ID'),
+                noPeserta: 'TES-08',
+                namaSiswa: 'Siswa Uji Coba Kelas 8 (Tes Koneksi)',
+                kelas: 'VIII A',
+                benar: 30,
+                salah: 0,
+                nilai: 100,
+                detailJawaban: QUESTIONS.map(q => formatAnswerDisplay(q.answer))
+            };
+
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(dummyPayload)
+                });
+                fb.textContent = 'Tes koneksi berhasil dikirim! Periksa Google Spreadsheet Anda, baris "Siswa Uji Coba Kelas 8" seharusnya sudah masuk.';
+                fb.className = 'rounded-xl p-3 text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
+            } catch (err) {
+                fb.textContent = 'Gagal terhubung ke URL Apps Script. Pastikan deployment diatur ke "Anyone / Siapa saja".';
+                fb.className = 'rounded-xl p-3 text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200';
+            }
+        }
+
+        function renderTeacherRekapTable() {
+            const records = JSON.parse(localStorage.getItem(STORAGE_KEY_RESULTS) || '[]');
+            document.getElementById('local-records-count').textContent = records.length;
+            const tbody = document.getElementById('rekap-table-body');
+
+            if (records.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-slate-400 text-sm">
+                            Belum ada data siswa kelas VIII yang menyelesaikan ujian di perangkat ini.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = records.map(r => `
+                <tr class="hover:bg-slate-50">
+                    <td class="py-2.5 px-4 text-xs text-slate-500 whitespace-nowrap">${r.timestamp}</td>
+                    <td class="py-2.5 px-4 font-mono text-xs font-semibold">${r.noPeserta}</td>
+                    <td class="py-2.5 px-4 font-semibold text-slate-800">${r.namaSiswa}</td>
+                    <td class="py-2.5 px-4 font-medium text-academic-700">${r.kelas}</td>
+                    <td class="py-2.5 px-4 text-center font-bold text-emerald-600">${r.benar}/30</td>
+                    <td class="py-2.5 px-4 text-center font-extrabold text-slate-900">${r.nilai}</td>
+                    <td class="py-2.5 px-4 text-center">
+                        ${r.synced
+                            ? '<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-semibold">Terkirim</span>'
+                            : '<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-semibold">Lokal</span>'
+                        }
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function clearLocalResults() {
+            localStorage.removeItem(STORAGE_KEY_RESULTS);
+            renderTeacherRekapTable();
+            showToast('Riwayat lokal berhasil dibersihkan.');
+        }
+
+        // SALIN KODE APPS SCRIPT
+        function copyAppsScriptCode() {
+            const textarea = document.getElementById('apps-script-code');
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            showToast('Kode Google Apps Script berhasil disalin!');
+        }
+
+        // NOTIFIKASI TOAST
+        let toastTimeout;
+        function showToast(message, type = 'success') {
+            const box = document.getElementById('toast-box');
+            const icon = document.getElementById('toast-icon');
+            const text = document.getElementById('toast-text');
+
+            text.textContent = message;
+            if (type === 'warning') {
+                icon.className = 'fa-solid fa-triangle-exclamation text-amber-400 text-base';
+            } else {
+                icon.className = 'fa-solid fa-circle-check text-emerald-400 text-base';
+            }
+
+            box.classList.remove('hidden');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                box.classList.add('hidden');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
